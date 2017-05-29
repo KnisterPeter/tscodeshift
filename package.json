@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "tscodeshift is a toolkit for running codemods over multiple TS files",
   "main": "./dist/src/index.js",
+  "bin": "./dist/src/index.js",
   "files": [
     "dist",
     "index.d.ts"
@@ -29,9 +30,12 @@
   "license": "MIT",
   "devDependencies": {
     "@knisterpeter/standard-tslint": "^1.5.1",
+    "@types/fs-extra": "^3.0.2",
     "@types/jest": "^19.2.3",
+    "@types/meow": "^3.6.2",
     "@types/node": "^7.0.18",
     "coveralls": "^2.11.15",
+    "execa": "^0.6.3",
     "globby": "^6.1.0",
     "jest": "^20.0.1",
     "rimraf": "^2.6.1",
@@ -55,5 +59,11 @@
       "json"
     ],
     "collectCoverage": true
+  },
+  "dependencies": {
+    "fs-extra": "^3.0.1",
+    "globby": "^6.1.0",
+    "meow": "^3.7.0",
+    "ts-emitter": "^0.2.0"
   }
 }
