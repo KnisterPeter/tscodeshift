@@ -1,0 +1,59 @@
+{
+  "name": "tscodeshift",
+  "version": "0.1.0",
+  "description": "tscodeshift is a toolkit for running codemods over multiple TS files",
+  "main": "./dist/src/index.js",
+  "files": [
+    "dist",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "linter": "tslint --project ./tsconfig.json --type-check",
+    "start": "npm test -- --watch",
+    "clean": "rimraf dist",
+    "build": "tsc",
+    "test": "jest",
+    "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
+    "prerelease": "git checkout master && git pull origin master && npm test",
+    "release": "standard-version",
+    "postrelease": "git push --follow-tags origin master && npm publish"
+  },
+  "author": {
+    "name": "Markus Wolf",
+    "email": "knister.peter@shadowrun-clan.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "KnisterPeter/ts-emitter"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@knisterpeter/standard-tslint": "^1.5.1",
+    "@types/jest": "^19.2.3",
+    "@types/node": "^7.0.18",
+    "coveralls": "^2.11.15",
+    "globby": "^6.1.0",
+    "jest": "^20.0.1",
+    "rimraf": "^2.6.1",
+    "standard-version": "^4.0.0",
+    "ts-jest": "^20.0.3",
+    "tslint": "^5.2.0",
+    "typescript": "^2.3.2"
+  },
+  "peerDependencies": {
+    "typescript": "^2.3.2"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "\\.test\\.(ts|tsx)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ],
+    "collectCoverage": true
+  }
+}
