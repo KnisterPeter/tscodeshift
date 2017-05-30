@@ -13,6 +13,7 @@ module.exports = function(wallaby) {
     },
     testFramework: 'jest',
     setup: function(wallaby) {
+      process.exit = function () {  };
       const jest = require('./package.json').jest;
       delete jest.transform;
       wallaby.testFramework.configure(jest);
