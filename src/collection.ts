@@ -32,7 +32,7 @@ export class Collection<T extends ts.Node> {
     return new Collection(marked, this.root);
   }
 
-  public replaceWith(fn: (node: T) => T): Collection<T> {
+  public replaceWith(fn: (node: T) => ts.Node): Collection<T> {
     const replacer = (context: ts.TransformationContext) => (rootNode: ts.SourceFile) => {
       const visitor = (node: ts.Node): ts.Node => {
         const markedNode = this.nodes.find(item => item === node);

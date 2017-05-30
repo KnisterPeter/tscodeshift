@@ -20,16 +20,17 @@ async function main(cli: meow.Result): Promise<void> {
   const transforms: types.Transform[] = transformPaths.map(path => require(path).default);
   const paths = await globby(cli.input);
   paths.forEach(async path => {
-    const result = await applyTransforms(path, transforms);
-    console.log('result for', path, result);
+    const source = (await fs.readFile(path)).toString();
+    const result = applyTransforms(path, source, transforms);
+    await fs.writeFile(path, result);
   });
 }
 
 /* @internal */
-export async function applyTransforms(path: string, transforms: types.Transform[]): Promise<string> {
+export function applyTransforms(path: string, source: string, transforms: types.Transform[]): string {
   const file: types.File = {
     path,
-    source: (await fs.readFile(path)).toString()
+    source
   };
   return transforms
     .reduce((file, transform) => {
