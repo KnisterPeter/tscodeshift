@@ -11,6 +11,17 @@
 tscodeshift is a toolkit for running codemods over multiple TS files.
 It borrows its ideas from [jscodeshift](https://github.com/facebook/jscodeshift) in a shameless manner.
 
+## Usage
+
+```
+  Usage: tscodeshift <path>... [options]
+
+  path     Files or directory to transform
+
+  Options:
+    -t FILE, --transform FILE   Path to the transform file. Can be either a local path or url  [./transform.js]
+```
+
 
 [license-image]: https://img.shields.io/github/license/KnisterPeter/tscodeshift.svg
 [license-link]: https://github.com/KnisterPeter/tscodeshift
