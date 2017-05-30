@@ -35,7 +35,7 @@ test('run identifiers transform', () => {
 });
 
 it('convert function expressions to arrow function expressions', () => {
-  function identifiersTransform(file: types.File, api: types.API): string {
+  function arrowTransform(file: types.File, api: types.API): string {
     const t = api.tscodeshift;
 
     return t(file.source)
@@ -85,7 +85,41 @@ it('convert function expressions to arrow function expressions', () => {
     const c = function name() {}.bind(this);
   `;
 
-  const actual = applyTransforms('path.ts', source, [identifiersTransform]);
+  const actual = applyTransforms('path.ts', source, [arrowTransform]);
+
+  expect(actual).toBe(expected);
+});
+
+it('convert var declarations to let declarations', () => {
+  function varTransform(file: types.File, api: types.API): string {
+    const t = api.tscodeshift;
+
+    return t(file.source)
+      .find(ts.SyntaxKind.VariableDeclarationList)
+      .filter(node => (
+        // tslint:disable-next-line no-bitwise
+        !(node.flags & ts.NodeFlags.Const
+        // tslint:disable-next-line no-bitwise
+        || node.flags & ts.NodeFlags.Let)
+      ))
+      .replaceWith(node => {
+        return ts.createVariableDeclarationList(
+          node.declarations,
+          // tslint:disable-next-line no-bitwise
+          node.flags | ts.NodeFlags.Let
+        );
+      })
+      .toSource();
+  }
+
+  const source = `
+    var a: number = 1;
+  `;
+  const expected = `
+    let a: number = 1;
+  `;
+
+  const actual = applyTransforms('path.ts', source, [varTransform]);
 
   expect(actual).toBe(expected);
 });
