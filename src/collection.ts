@@ -1,5 +1,6 @@
 import * as emitter from 'ts-emitter';
 import * as ts from 'typescript';
+import { isPatternMatching } from './pattern-matcher';
 
 export class Collection<T extends ts.Node> {
 
@@ -29,7 +30,7 @@ export class Collection<T extends ts.Node> {
     const marked: ts.Node[] = [];
     const visitor = (node: ts.Node) => {
       if (node.kind === kind) {
-        if (pattern && this.isPatternMatching(node, pattern)) {
+        if (pattern && isPatternMatching(node, pattern)) {
           marked.push(node);
         } else if (!pattern) {
           marked.push(node);
@@ -42,44 +43,6 @@ export class Collection<T extends ts.Node> {
       ts.forEachChild(node, visitor);
     });
     return new Collection(marked, this.root);
-  }
-
-  private isPatternMatching(node: ts.Node, pattern: any): boolean {
-    switch (node.kind) {
-      case ts.SyntaxKind.Identifier:
-        return this.matchIdentifier(node as ts.Identifier, pattern);
-      case ts.SyntaxKind.CallExpression:
-        return this.matchCallExpression(node as ts.CallExpression, pattern);
-      case ts.SyntaxKind.PropertyAccessExpression:
-        return this.matchPropertyAccessExpression(node as ts.PropertyAccessExpression, pattern);
-      case ts.SyntaxKind.FunctionExpression:
-        return this.matchFunctionExpression(node as ts.FunctionExpression, pattern);
-      default:
-        throw new Error(`Pattern for ${ts.SyntaxKind[node.kind]} not implemented`);
-    }
-  }
-
-  private matchFunctionExpression(_node: ts.FunctionExpression, _pattern: any): boolean {
-    return true;
-  }
-
-  private matchPropertyAccessExpression(node: ts.PropertyAccessExpression, pattern: any): boolean {
-    let matching = true;
-    matching = matching && this.matchProperty(node, 'expression', pattern);
-    matching = matching && this.matchProperty(node, 'name', pattern);
-    return matching;
-  }
-
-  private matchIdentifier(node: ts.Identifier, pattern: {name: string}): boolean {
-    return node.text === pattern.name;
-  }
-
-  private matchCallExpression(node: ts.CallExpression, pattern: any): boolean {
-    return this.matchProperty(node, 'expression', pattern, 'callee');
-  }
-
-  private matchProperty(node: any, property: string, pattern: any, name = property): boolean {
-    return pattern[name] && this.isPatternMatching(node[property], pattern[name]);
   }
 
   public filter(fn: (node: T) => boolean): Collection<T> {
@@ -126,9 +89,9 @@ export class Collection<T extends ts.Node> {
 }
 
 export interface IdentifierPattern {
-  name: string;
+  text: string;
 }
 
 export interface CallExpressionPattern {
-  callee: any;
+  expression: any;
 }

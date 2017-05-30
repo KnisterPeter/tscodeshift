@@ -25,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "KnisterPeter/ts-emitter"
+    "url": "KnisterPeter/tscodeshift"
   },
   "license": "MIT",
   "devDependencies": {
@@ -49,6 +49,12 @@
   "peerDependencies": {
     "typescript": "^2.3.2"
   },
+  "dependencies": {
+    "fs-extra": "^3.0.1",
+    "globby": "^6.1.0",
+    "meow": "^3.7.0",
+    "ts-emitter": "^0.2.1"
+  },
   "jest": {
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
@@ -61,11 +67,5 @@
       "json"
     ],
     "collectCoverage": true
-  },
-  "dependencies": {
-    "fs-extra": "^3.0.1",
-    "globby": "^6.1.0",
-    "meow": "^3.7.0",
-    "ts-emitter": "^0.2.0"
   }
 }

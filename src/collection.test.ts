@@ -36,7 +36,7 @@ describe('Collection', () => {
         const collection = Collection.fromSource(source);
 
         const actual = collection
-          .find(ts.SyntaxKind.Identifier, {name: 'a'})
+          .find(ts.SyntaxKind.Identifier, {text: 'a'})
           .size();
 
         expect(actual).toBe(2);
@@ -45,19 +45,19 @@ describe('Collection', () => {
     describe('with SyntaxKind.CallExpression', () => {
       it('should collect all expressions matching the given callee', () => {
         const source = `
-          const a = function() {}.bind();
+          const a = function() {}.bind(this);
+          const b = function() {}.bound(this);
+          b.bind(this);
         `;
         const collection = Collection.fromSource(source);
         const actual = collection
           .find(ts.SyntaxKind.CallExpression, {
-            callee: {
-              kind: ts.SyntaxKind.PropertyAccessExpression,
+            expression: {
               expression: {
                 kind: ts.SyntaxKind.FunctionExpression
               },
               name: {
-                kind: ts.SyntaxKind.Identifier,
-                name: 'bind'
+                text: 'bind'
               }
             }
           })
