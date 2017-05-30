@@ -2,12 +2,17 @@
 import * as fs from 'fs-extra';
 import globby = require('globby');
 import meow = require('meow');
+import * as ts from 'typescript';
 import { Collection } from './collection';
 import * as types from './types';
 
 const api = {
-  tscodeshift: (source: string) => {
-    return Collection.createCollectionFromSource(source);
+  tscodeshift: (source: string|ts.Node) => {
+    if (typeof source === 'string') {
+      return Collection.fromSource(source);
+    } else {
+      return Collection.fromNode(source);
+    }
   }
 };
 
