@@ -5,37 +5,51 @@ export class Collection<T extends ts.Node> {
 
   private root: ts.SourceFile;
 
-  private _nodes: T[];
+  private collected: T[];
 
-  public static createRootCollection(root: ts.SourceFile): Collection<ts.SourceFile> {
-    return new Collection<ts.SourceFile>([root], root);
+  public static createCollectionFromSource(source: string): Collection<ts.SourceFile> {
+    const file = emitter.fromSource(source);
+    return new Collection<ts.SourceFile>([file], file);
   }
 
-  private constructor(nodes: T[], root: ts.SourceFile) {
+  private constructor(collected: T[], root: ts.SourceFile) {
     this.root = root;
-    this._nodes = nodes;
+    this.collected = collected;
   }
 
-  public find(kind: ts.SyntaxKind.Identifier): Collection<ts.Identifier>;
-  public find(kind: ts.SyntaxKind): Collection<ts.Node> {
+  public find(kind: ts.SyntaxKind.Identifier, pattern?: {name: string}): Collection<ts.Identifier>;
+  public find(kind: ts.SyntaxKind, pattern?: any): Collection<ts.Node> {
     const marked: ts.Node[] = [];
     const visitor = (node: ts.Node) => {
       if (node.kind === kind) {
-        marked.push(node);
+        if (pattern) {
+          switch (node.kind) {
+            case ts.SyntaxKind.Identifier:
+              this.matchIdentifier(marked, node as ts.Identifier, pattern);
+          }
+        } else {
+          marked.push(node);
+        }
       } else {
         ts.forEachChild(node, visitor);
       }
     };
-    this.nodes.forEach(node => {
+    this.collected.forEach(node => {
       ts.forEachChild(node, visitor);
     });
     return new Collection(marked, this.root);
   }
 
+  private matchIdentifier(marked: ts.Node[], node: ts.Identifier, pattern: {name: string}): void {
+    if (node.text === pattern.name) {
+      marked.push(node);
+    }
+  }
+
   public replaceWith(fn: (node: T) => ts.Node): Collection<T> {
     const replacer = (context: ts.TransformationContext) => (rootNode: ts.SourceFile) => {
       const visitor = (node: ts.Node): ts.Node => {
-        const markedNode = this.nodes.find(item => item === node);
+        const markedNode = this.collected.find(item => item === node);
         if (markedNode) {
           const replaced = fn(markedNode);
           (replaced as any).original = markedNode;
@@ -52,8 +66,8 @@ export class Collection<T extends ts.Node> {
     return this;
   }
 
-  public get nodes(): T[] {
-    return this._nodes;
+  public size(): number {
+    return this.collected.length;
   }
 
   public toSource(): string {
