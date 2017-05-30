@@ -18,6 +18,7 @@ export class Collection<T extends ts.Node> {
   }
 
   public find(kind: ts.SyntaxKind.Identifier, pattern?: {name: string}): Collection<ts.Identifier>;
+  public find(kind: ts.SyntaxKind.FunctionDeclaration): Collection<ts.FunctionDeclaration>;
   public find(kind: ts.SyntaxKind, pattern?: any): Collection<ts.Node> {
     const marked: ts.Node[] = [];
     const visitor = (node: ts.Node) => {
@@ -44,6 +45,16 @@ export class Collection<T extends ts.Node> {
     if (node.text === pattern.name) {
       marked.push(node);
     }
+  }
+
+  public filter(fn: (node: T) => boolean): Collection<T> {
+    const marked: T[] = [];
+    this.collected.forEach(node => {
+      if (fn(node)) {
+        marked.push(node);
+      }
+    });
+    return new Collection(marked, this.root);
   }
 
   public replaceWith(fn: (node: T) => ts.Node): Collection<T> {
