@@ -43,20 +43,20 @@ describe('Collection', () => {
       });
     });
   });
-});
-describe('Collection#filter', () => {
-  it('should return a collection of nodes matching the given filter', () => {
-    const source = `
-      function fn1(a: string): void {}
-      function fn2(a: string): void {}
-    `;
-    const collection = Collection.createCollectionFromSource(source);
+  describe('#filter', () => {
+    it('should return a collection of nodes matching the given filter', () => {
+      const source = `
+        function fn1(a: string): void {}
+        function fn2(a: string): void {}
+      `;
+      const collection = Collection.fromSource(source);
 
-    const actual = collection
-      .find(ts.SyntaxKind.FunctionDeclaration)
-      .filter(node => node.name!.text === 'fn1')
-      .size();
+      const actual = collection
+        .find(ts.SyntaxKind.FunctionDeclaration)
+        .filter(node => node.name!.text === 'fn1')
+        .size();
 
-    expect(actual).toBe(1);
+      expect(actual).toBe(1);
+    });
   });
 });
