@@ -2,13 +2,12 @@
 import * as fs from 'fs-extra';
 import globby = require('globby');
 import meow = require('meow');
-import * as emitter from 'ts-emitter';
 import { Collection } from './collection';
 import * as types from './types';
 
 const api = {
   tscodeshift: (source: string) => {
-    return Collection.createRootCollection(emitter.fromSource(source));
+    return Collection.createCollectionFromSource(source);
   }
 };
 
