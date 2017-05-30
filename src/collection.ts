@@ -26,6 +26,8 @@ export class Collection<T extends ts.Node> {
   public find(kind: ts.SyntaxKind.FunctionDeclaration): Collection<ts.FunctionDeclaration>;
   public find(kind: ts.SyntaxKind.FunctionExpression): Collection<ts.FunctionExpression>;
   public find(kind: ts.SyntaxKind.CallExpression, pattern?: CallExpressionPattern): Collection<ts.CallExpression>;
+  public find(kind: ts.SyntaxKind.VariableDeclarationList): Collection<ts.VariableDeclarationList>;
+  public find(kind: ts.SyntaxKind.VariableDeclaration): Collection<ts.VariableDeclaration>;
   public find(kind: ts.SyntaxKind, pattern?: any): Collection<ts.Node> {
     const marked: ts.Node[] = [];
     const visitor = (node: ts.Node) => {
