@@ -90,7 +90,6 @@ it('convert function expressions to arrow function expressions', () => {
   expect(actual).toBe(expected);
 });
 
-
 it('convert var declarations to let declarations', () => {
   function varTransform(file: types.File, api: types.API): string {
     const t = api.tscodeshift;
