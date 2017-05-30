@@ -42,6 +42,30 @@ describe('Collection', () => {
         expect(actual).toBe(2);
       });
     });
+    describe('with SyntaxKind.CallExpression', () => {
+      it('should collect all expressions matching the given callee', () => {
+        const source = `
+          const a = function() {}.bind();
+        `;
+        const collection = Collection.fromSource(source);
+        const actual = collection
+          .find(ts.SyntaxKind.CallExpression, {
+            callee: {
+              kind: ts.SyntaxKind.PropertyAccessExpression,
+              expression: {
+                kind: ts.SyntaxKind.FunctionExpression
+              },
+              name: {
+                kind: ts.SyntaxKind.Identifier,
+                name: 'bind'
+              }
+            }
+          })
+          .size();
+
+        expect(actual).toBe(1);
+      });
+    });
   });
   describe('#filter', () => {
     it('should return a collection of nodes matching the given filter', () => {
