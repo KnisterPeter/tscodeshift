@@ -30,10 +30,12 @@
   "license": "MIT",
   "devDependencies": {
     "@knisterpeter/standard-tslint": "^1.5.1",
+    "@types/common-tags": "^1.2.5",
     "@types/fs-extra": "^3.0.2",
     "@types/jest": "^19.2.3",
     "@types/meow": "^3.6.2",
     "@types/node": "^7.0.18",
+    "common-tags": "^1.4.0",
     "coveralls": "^2.11.15",
     "execa": "^0.6.3",
     "globby": "^6.1.0",
