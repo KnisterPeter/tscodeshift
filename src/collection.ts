@@ -3,16 +3,20 @@ import * as ts from 'typescript';
 
 export class Collection<T extends ts.Node> {
 
-  private root: ts.SourceFile;
+  private root: T;
 
   private collected: T[];
 
-  public static createCollectionFromSource(source: string): Collection<ts.SourceFile> {
+  public static fromSource(source: string): Collection<ts.SourceFile> {
     const file = emitter.fromSource(source);
-    return new Collection<ts.SourceFile>([file], file);
+    return new Collection([file], file);
   }
 
-  private constructor(collected: T[], root: ts.SourceFile) {
+  public static fromNode<T extends ts.Node>(node: T): Collection<T> {
+    return new Collection([node], node);
+  }
+
+  private constructor(collected: T[], root: T) {
     this.root = root;
     this.collected = collected;
   }
@@ -58,7 +62,7 @@ export class Collection<T extends ts.Node> {
   }
 
   public replaceWith(fn: (node: T) => ts.Node): Collection<T> {
-    const replacer = (context: ts.TransformationContext) => (rootNode: ts.SourceFile) => {
+    const replacer = (context: ts.TransformationContext) => (rootNode: T) => {
       const visitor = (node: ts.Node): ts.Node => {
         const markedNode = this.collected.find(item => item === node);
         if (markedNode) {
@@ -82,6 +86,10 @@ export class Collection<T extends ts.Node> {
   }
 
   public toSource(): string {
-    return emitter.toSource(this.root);
+    if (this.root.kind !== ts.SyntaxKind.SourceFile) {
+      throw new Error(`toSource() could only be called on collections of type `
+        + `'ts.SourceFile' but this is of type '${ts.SyntaxKind[this.root.kind]}'`);
+    }
+    return emitter.toSource(this.root as any);
   }
 }
