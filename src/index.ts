@@ -26,7 +26,9 @@ async function main(cli: meow.Result): Promise<void> {
   paths.forEach(async path => {
     const source = (await fs.readFile(path)).toString();
     const result = applyTransforms(path, source, transforms);
-    await fs.writeFile(path, result);
+    if (result !== source) {
+      await fs.writeFile(path, result);
+    }
   });
 }
 
