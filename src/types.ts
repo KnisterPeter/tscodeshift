@@ -13,5 +13,5 @@ export interface API {
 }
 
 export interface TSCodeShift {
-  (source: string): Collection<ts.SourceFile>;
+  <T extends ts.Node>(source: string|T): Collection<T>;
 }
