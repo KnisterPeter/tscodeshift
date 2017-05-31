@@ -16,12 +16,22 @@ It borrows its ideas from [jscodeshift](https://github.com/facebook/jscodeshift)
 ```
   Usage: tscodeshift <path>... [options]
 
-  path     Files or directory to transform
+  path     Files or directory or glob to transform
 
   Options:
     -t FILE, --transform FILE   Path to the transform file. Can be either a local path or url  [./transform.js]
+    -d, --dry                   Dry run (no changes are made to files)
+    -p, --print                 Print output, useful for development
 ```
 
+## Example
+
+Convert mocha tests to jest tests:
+
+```shell
+$ npm install tscodeshift
+$ ./node_modules/.bin/tscodeshift -t ./node_modules/tscodeshift/dist/src/transforms/mocha.js 'tests/**/*.ts'
+```
 
 [license-image]: https://img.shields.io/github/license/KnisterPeter/tscodeshift.svg
 [license-link]: https://github.com/KnisterPeter/tscodeshift

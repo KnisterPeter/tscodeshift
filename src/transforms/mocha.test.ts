@@ -1,7 +1,7 @@
 import { stripIndent } from 'common-tags';
 import { applyTransforms } from '../transform';
 
-import transform from './jest';
+import transform from './mocha';
 
 test('Convert mocha test to jest test', () => {
   const source = stripIndent`
