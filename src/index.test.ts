@@ -1,6 +1,6 @@
 import { stripIndent } from 'common-tags';
 import * as ts from 'typescript';
-import { applyTransforms } from './index';
+import { applyTransforms } from './transform';
 import * as types from './types';
 
 test('run identifiers transform', () => {

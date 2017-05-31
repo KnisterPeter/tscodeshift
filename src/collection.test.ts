@@ -83,4 +83,20 @@ describe('Collection', () => {
       expect(actual).toBe(1);
     });
   });
+  describe('#get', () => {
+    it('should return a subtree of found nodes', () => {
+      const source = `
+        function fn1(a: string): void {}
+        function fn2(a: string): void {}
+      `;
+      const collection = Collection.fromSource(source);
+
+      const actual = collection
+        .find(ts.SyntaxKind.FunctionDeclaration)
+        .get(node => node.name)
+        .size();
+
+      expect(actual).toBe(2);
+    });
+  });
 });
