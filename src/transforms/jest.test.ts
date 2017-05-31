@@ -9,8 +9,15 @@ test('Convert mocha test to jest test', () => {
       // something
     });
 
+    beforeEach(() => {
+    });
+
     suite('Array', function() {
       setup(() => {
+      });
+
+      test('Array', (done: MochaDone) => {
+        done();
       });
 
       specify.skip('Array', function(done) {
@@ -23,8 +30,15 @@ test('Convert mocha test to jest test', () => {
       // something
     });
 
+    beforeEach(()=> {
+    });
+
     describe('Array', function() {
       beforeEach(()=> {
+      });
+
+      it('Array', (done: jest.DoneCallback) => {
+        done();
       });
 
       it.skip('Array', function(done) {

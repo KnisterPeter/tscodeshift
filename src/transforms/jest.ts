@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import { Collection } from '../collection';
 import { File, API } from '../types';
 
 const methodMap: { [key: string]: string } = {
@@ -33,6 +34,35 @@ const methodModifiers = ['only', 'skip'];
 //     return scope.isGlobal ? false : hasBinding(name, scope.parent);
 // }
 
+function findMochaMethods(ast: Collection<ts.Node, ts.Node>, mochaMethod: string):
+    Collection<ts.CallExpression, ts.Node> {
+  return ast
+    .find(ts.SyntaxKind.CallExpression, {
+      expression: {
+        kind: ts.SyntaxKind.Identifier,
+        text: mochaMethod
+      }
+    });
+}
+
+function findMochaMethodsWithModifier(ast: Collection<ts.Node, ts.Node>, mochaMethod: string, modifier: string):
+    Collection<ts.CallExpression, ts.Node> {
+  return ast
+    .find(ts.SyntaxKind.CallExpression, {
+      expression: {
+        kind: ts.SyntaxKind.PropertyAccessExpression,
+        expression: {
+          kind: ts.SyntaxKind.Identifier,
+          text: mochaMethod
+        },
+        name: {
+          kind: ts.SyntaxKind.Identifier,
+          text: modifier
+        }
+      }
+    });
+}
+
 export default function mochaToJest(file: File, api: API): string {
   const t = api.tscodeshift;
   const ast = t(file.source);
@@ -40,13 +70,20 @@ export default function mochaToJest(file: File, api: API): string {
   Object.keys(methodMap).forEach(mochaMethod => {
     const jestMethod = methodMap[mochaMethod];
 
-    ast
-      .find(ts.SyntaxKind.CallExpression, {
-        expression: {
+    findMochaMethods(ast, mochaMethod)
+      .find(ts.SyntaxKind.TypeReference, {
+        typeName: {
           kind: ts.SyntaxKind.Identifier,
-          text: mochaMethod
+          text: 'MochaDone'
         }
       })
+      .replaceWith(() => {
+        return ts.createQualifiedName(
+          ts.createIdentifier('jest'),
+          ts.createIdentifier('DoneCallback')
+        );
+      });
+    findMochaMethods(ast, mochaMethod)
       // .filter(({ scope }) => !hasBinding(mochaMethod, scope))
       .get(node => node.expression)
       .replaceWith(() => {
@@ -58,36 +95,10 @@ export default function mochaToJest(file: File, api: API): string {
       });
 
     methodModifiers.forEach(modifier => {
-      ast
-        .find(ts.SyntaxKind.CallExpression, {
-          expression: {
-            kind: ts.SyntaxKind.PropertyAccessExpression,
-            expression: {
-              kind: ts.SyntaxKind.Identifier,
-              text: mochaMethod
-            },
-            name: {
-              kind: ts.SyntaxKind.Identifier,
-              text: modifier
-            }
-          }
-        })
+      findMochaMethodsWithModifier(ast, mochaMethod, modifier)
         .get(node => (node.expression as ts.PropertyAccessExpression).expression)
         .replaceWith(() => ts.createIdentifier(jestMethod));
-      ast
-        .find(ts.SyntaxKind.CallExpression, {
-          expression: {
-            kind: ts.SyntaxKind.PropertyAccessExpression,
-            expression: {
-              kind: ts.SyntaxKind.Identifier,
-              text: mochaMethod
-            },
-            name: {
-              kind: ts.SyntaxKind.Identifier,
-              text: modifier
-            }
-          }
-        })
+      findMochaMethodsWithModifier(ast, mochaMethod, modifier)
         .get(node => (node.expression as ts.PropertyAccessExpression).name)
         .replaceWith(() => ts.createIdentifier(modifier));
     });
