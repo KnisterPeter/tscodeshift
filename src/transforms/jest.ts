@@ -34,7 +34,7 @@ const methodModifiers = ['only', 'skip'];
 //     return scope.isGlobal ? false : hasBinding(name, scope.parent);
 // }
 
-function findMochaMethods(ast: Collection<ts.Node, ts.Node>, mochaMethod: string):
+function findFunctionCall(ast: Collection<ts.Node, ts.Node>, mochaMethod: string):
     Collection<ts.CallExpression, ts.Node> {
   return ast
     .find(ts.SyntaxKind.CallExpression, {
@@ -67,23 +67,27 @@ export default function mochaToJest(file: File, api: API): string {
   const t = api.tscodeshift;
   const ast = t(file.source);
 
-  Object.keys(methodMap).forEach(mochaMethod => {
-    const jestMethod = methodMap[mochaMethod];
-
-    findMochaMethods(ast, mochaMethod)
+  [...Object.keys(methodMap), 'it', 'test'].forEach(method => {
+    findFunctionCall(ast, method)
       .find(ts.SyntaxKind.TypeReference, {
         typeName: {
           kind: ts.SyntaxKind.Identifier,
           text: 'MochaDone'
         }
       })
+      .get(node => node.typeName)
       .replaceWith(() => {
         return ts.createQualifiedName(
           ts.createIdentifier('jest'),
           ts.createIdentifier('DoneCallback')
         );
       });
-    findMochaMethods(ast, mochaMethod)
+  });
+
+  Object.keys(methodMap).forEach(mochaMethod => {
+    const jestMethod = methodMap[mochaMethod];
+
+    findFunctionCall(ast, mochaMethod)
       // .filter(({ scope }) => !hasBinding(mochaMethod, scope))
       .get(node => node.expression)
       .replaceWith(() => {
