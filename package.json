@@ -1,6 +1,6 @@
 {
   "name": "tscodeshift",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "tscodeshift is a toolkit for running codemods over multiple TS files",
   "main": "./dist/src/index.js",
   "bin": "./dist/src/index.js",
