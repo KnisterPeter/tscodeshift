@@ -53,7 +53,7 @@
     "fs-extra": "^3.0.1",
     "globby": "^6.1.0",
     "meow": "^3.7.0",
-    "ts-emitter": "^0.2.1"
+    "ts-emitter": "^0.2.2"
   },
   "jest": {
     "transform": {
