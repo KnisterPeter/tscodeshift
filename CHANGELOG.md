@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/KnisterPeter/tscodeshift/compare/v0.3.0...v0.4.0) (2017-05-31)
+
+
+### Bug Fixes
+
+* catch more mocha functions ([da4e0cc](https://github.com/KnisterPeter/tscodeshift/commit/da4e0cc))
+
+
+### Features
+
+* add dry and print options to cli ([a1babe5](https://github.com/KnisterPeter/tscodeshift/commit/a1babe5))
+* add support for TypeReferences ([3900bda](https://github.com/KnisterPeter/tscodeshift/commit/3900bda))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/KnisterPeter/tscodeshift/compare/v0.2.0...v0.3.0) (2017-05-31)
 
