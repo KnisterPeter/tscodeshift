@@ -4,6 +4,7 @@ export function isPatternMatching(node: ts.Node, pattern: any): boolean {
   if (!matchProperty(node, 'kind', pattern)) {
     return false;
   }
+  // tslint:disable-next-line cyclomatic-complexity
   switch (node.kind) {
     case ts.SyntaxKind.Identifier:
       return matchIdentifier(node as ts.Identifier, pattern);
@@ -13,6 +14,8 @@ export function isPatternMatching(node: ts.Node, pattern: any): boolean {
       return matchPropertyAccessExpression(node as ts.PropertyAccessExpression, pattern);
     case ts.SyntaxKind.FunctionExpression:
       return matchFunctionExpression(node as ts.FunctionExpression, pattern);
+    case ts.SyntaxKind.TypeReference:
+      return matchTypeReference(node as ts.TypeReferenceNode, pattern);
     default:
       throw new Error(`Pattern for ${ts.SyntaxKind[node.kind]} not implemented`);
   }
@@ -35,6 +38,12 @@ function matchIdentifier(node: ts.Identifier, pattern: {text: string}): boolean 
 
 function matchCallExpression(node: ts.CallExpression, pattern: any): boolean {
   return matchProperty(node, 'expression', pattern);
+}
+
+function matchTypeReference(node: ts.TypeReferenceNode, pattern: any): boolean {
+  let matching = true;
+  matching = matching && matchProperty(node, 'text', pattern);
+  return matching;
 }
 
 // tslint:disable-next-line cyclomatic-complexity

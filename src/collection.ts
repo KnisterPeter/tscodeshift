@@ -40,6 +40,7 @@ export class Collection<T extends ts.Node, R extends ts.Node> {
   public find(kind: ts.SyntaxKind.CallExpression, pattern?: CallExpressionPattern): Collection<ts.CallExpression, R>;
   public find(kind: ts.SyntaxKind.VariableDeclarationList): Collection<ts.VariableDeclarationList, R>;
   public find(kind: ts.SyntaxKind.VariableDeclaration): Collection<ts.VariableDeclaration, R>;
+  public find(kind: ts.SyntaxKind.TypeReference, pattern?: any): Collection<ts.TypeReferenceNode, R>;
   public find(kind: ts.SyntaxKind, pattern?: any): Collection<ts.Node, R> {
     const marked: ts.Node[] = [];
     const visitor = (node: ts.Node) => {
@@ -90,7 +91,7 @@ export class Collection<T extends ts.Node, R extends ts.Node> {
           const replaced = fn(markedNode);
           if (replaced !== markedNode) {
             (replaced as any).original = markedNode;
-            if ((replaced as any).text && (replaced as any).text !== (markedNode as any).text) {
+            if ((replaced as any).text && (markedNode as any).text) {
               (replaced as any).newText = (replaced as any).text;
             }
           }
