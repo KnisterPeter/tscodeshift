@@ -24,6 +24,11 @@ test('Convert mocha test to jest test', () => {
         done();
       });
     });
+
+    describe('', () => {
+      it('', (done: MochaDone) => {
+      });
+    });
   `;
   const expected = stripIndent`
     beforeAll(()=> {
@@ -43,6 +48,11 @@ test('Convert mocha test to jest test', () => {
 
       it.skip('Array', function(done) {
         done();
+      });
+    });
+
+    describe('', () => {
+      it('', (done: jest.DoneCallback) => {
       });
     });
   `;
