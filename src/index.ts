@@ -17,7 +17,7 @@ async function main(cli: meow.Result): Promise<void> {
     cli.flags['t'] || [],
     cli.flags['transform'] || []
   ).map(makeRelative);
-  const transforms: types.Transform[] = transformPaths.map(path => require(path).default);
+  const transforms: types.Transform[] = transformPaths.map(filepath => require(filepath).default);
   const paths = await globby(cli.input);
   paths.forEach(async filepath => {
     const source = (await fs.readFile(filepath)).toString();
