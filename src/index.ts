@@ -19,14 +19,14 @@ async function main(cli: meow.Result): Promise<void> {
   ).map(makeRelative);
   const transforms: types.Transform[] = transformPaths.map(path => require(path).default);
   const paths = await globby(cli.input);
-  paths.forEach(async path => {
-    const source = (await fs.readFile(path)).toString();
-    const result = applyTransforms(path, source, transforms);
+  paths.forEach(async filepath => {
+    const source = (await fs.readFile(filepath)).toString();
+    const result = applyTransforms(filepath, source, transforms);
     if (result !== source && !cli.flags.d && !cli.flags.dry) {
-      await fs.writeFile(path, result);
+      await fs.writeFile(filepath, result);
     }
     if (cli.flags.print || cli.flags.p) {
-      console.log(`Output for ${path}`);
+      console.log(`Output for ${filepath}`);
       console.log(result);
     }
   });
