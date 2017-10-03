@@ -1,0 +1,25 @@
+before(() => {
+  // something
+});
+
+beforeEach(() => {
+});
+
+suite('Array', function() {
+  setup(() => {
+  });
+
+  test('Array', (done: MochaDone) => {
+    done();
+  });
+
+  specify.skip('Array', function(done) {
+    done();
+  });
+});
+
+describe('', () => {
+  it('', (done: MochaDone) => {
+    done();
+  });
+});

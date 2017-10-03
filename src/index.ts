@@ -2,6 +2,7 @@
 import * as fs from 'fs-extra';
 import globby = require('globby');
 import meow = require('meow');
+import * as path from 'path';
 import { applyTransforms } from './transform';
 import * as types from './types';
 
@@ -10,10 +11,12 @@ async function main(cli: meow.Result): Promise<void> {
     cli.showHelp(0);
     return;
   }
+  const cwd = process.cwd();
+  const makeRelative = (x: string): string => path.resolve(cwd, x);
   const transformPaths = [].concat(
     cli.flags['t'] || [],
     cli.flags['transform'] || []
-  );
+  ).map(makeRelative);
   const transforms: types.Transform[] = transformPaths.map(path => require(path).default);
   const paths = await globby(cli.input);
   paths.forEach(async path => {

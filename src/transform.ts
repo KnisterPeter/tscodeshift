@@ -2,8 +2,8 @@ import * as ts from 'typescript';
 import { Collection } from './collection';
 import * as types from './types';
 
-const api = {
-  tscodeshift: (source: string|ts.Node) => {
+export const api = {
+  tscodeshift: (source: string|ts.Node): Collection<any, any> => {
     if (typeof source === 'string') {
       return Collection.fromSource(source);
     } else {
