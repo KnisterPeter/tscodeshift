@@ -1,5 +1,4 @@
 /* global test, expect, afterEach */
-// https://stackoverflow.com/questions/39415661
 import execa = require('execa');
 import * as path from 'path';
 const shell = ((execa as any).shell);

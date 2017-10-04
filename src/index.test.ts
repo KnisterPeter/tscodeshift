@@ -127,7 +127,7 @@ it('convert var declarations to let declarations', () => {
 test(`api.tscodeshift can process raw ts.Nodes`, () => {
   expect(typeof api).toBe(`object`);
   expect(typeof api.tscodeshift).toBe(`function`);
-  const removeCircularCrap = (x: any): any => {
+  const removeCircularReferences = (x: any): any => {
     delete x.collected[0].endOfFileToken.parent;
     delete x.collected[0].statements[0].expression.parent;
     delete x.collected[0].statements[0].parent;
@@ -135,7 +135,7 @@ test(`api.tscodeshift can process raw ts.Nodes`, () => {
     x.collected[0].path = splits[splits.length - 1];
     return x;
   };
-  const expected = JSON.parse(JSON.stringify(removeCircularCrap(api.tscodeshift(`false`))));
+  const expected = JSON.parse(JSON.stringify(removeCircularReferences(api.tscodeshift(`false`))));
   expect(JSON.parse(JSON.stringify(api.tscodeshift(expected)))).toEqual({
     collected: [
       {
