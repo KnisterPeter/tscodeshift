@@ -124,7 +124,7 @@ it('convert var declarations to let declarations', () => {
   expect(actual).toBe(expected);
 });
 
-test(`api`, () => {
+test(`api.tscodeshift can process raw ts.Nodes`, () => {
   expect(typeof api).toBe(`object`);
   expect(typeof api.tscodeshift).toBe(`function`);
   const removeCircularCrap = (x: any): any => {
@@ -136,7 +136,6 @@ test(`api`, () => {
     return x;
   };
   const expected = JSON.parse(JSON.stringify(removeCircularCrap(api.tscodeshift(`false`))));
-  // expect(JSON.parse(JSON.stringify(removeCircularCrap(expected)))).toEqual(circular)
   expect(JSON.parse(JSON.stringify(api.tscodeshift(expected)))).toEqual({
     collected: [
       {
@@ -172,9 +171,10 @@ test(`api`, () => {
               end: 5,
               expression: {
                 end: 5,
-              flags: 0,
-              kind: 86,
-              pos: 0},
+                flags: 0,
+                kind: 86,
+                pos: 0
+              },
               flags: 0,
               kind: 210,
               modifierFlagsCache: 536870912,
