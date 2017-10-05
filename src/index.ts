@@ -2,6 +2,7 @@
 import * as fs from 'fs-extra';
 import globby = require('globby');
 import meow = require('meow');
+import * as path from 'path';
 import { applyTransforms } from './transform';
 import * as types from './types';
 
@@ -10,20 +11,22 @@ async function main(cli: meow.Result): Promise<void> {
     cli.showHelp(0);
     return;
   }
+  const cwd = process.cwd();
+  const makeRelative = (x: string): string => path.resolve(cwd, x);
   const transformPaths = [].concat(
     cli.flags['t'] || [],
     cli.flags['transform'] || []
-  );
-  const transforms: types.Transform[] = transformPaths.map(path => require(path).default);
+  ).map(makeRelative);
+  const transforms: types.Transform[] = transformPaths.map(filepath => require(filepath).default);
   const paths = await globby(cli.input);
-  paths.forEach(async path => {
-    const source = (await fs.readFile(path)).toString();
-    const result = applyTransforms(path, source, transforms);
+  paths.forEach(async filepath => {
+    const source = (await fs.readFile(filepath)).toString();
+    const result = applyTransforms(filepath, source, transforms);
     if (result !== source && !cli.flags.d && !cli.flags.dry) {
-      await fs.writeFile(path, result);
+      await fs.writeFile(filepath, result);
     }
     if (cli.flags.print || cli.flags.p) {
-      console.log(`Output for ${path}`);
+      console.log(`Output for ${filepath}`);
       console.log(result);
     }
   });

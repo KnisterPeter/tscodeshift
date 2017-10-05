@@ -1,6 +1,6 @@
 import { stripIndent } from 'common-tags';
 import * as ts from 'typescript';
-import { applyTransforms } from './transform';
+import { applyTransforms, api } from './transform';
 import * as types from './types';
 
 test('run identifiers transform', () => {
@@ -122,4 +122,69 @@ it('convert var declarations to let declarations', () => {
   const actual = applyTransforms('path.ts', source, [varTransform]);
 
   expect(actual).toBe(expected);
+});
+
+test(`api.tscodeshift can process raw ts.Nodes`, () => {
+  expect(typeof api).toBe(`object`);
+  expect(typeof api.tscodeshift).toBe(`function`);
+  const removeCircularReferences = (x: any): any => {
+    delete x.collected[0].endOfFileToken.parent;
+    delete x.collected[0].statements[0].expression.parent;
+    delete x.collected[0].statements[0].parent;
+    const splits = x.collected[0].path.split(`/`);
+    x.collected[0].path = splits[splits.length - 1];
+    return x;
+  };
+  const expected = JSON.parse(JSON.stringify(removeCircularReferences(api.tscodeshift(`false`))));
+  expect(JSON.parse(JSON.stringify(api.tscodeshift(expected)))).toEqual({
+    collected: [
+      {
+        collected: [
+          {
+            ambientModuleNames: [],
+            amdDependencies: [],
+            bindDiagnostics: [],
+            end: 5,
+            endOfFileToken: {
+              end: 5,
+              flags: 0,
+              kind: 1,
+              pos: 5
+            },
+            fileName: `source.tsx`,
+            flags: 0,
+            identifierCount: 0,
+            identifiers: {},
+            imports: [],
+            isDeclarationFile: false,
+            kind: 265,
+            languageVariant: 1,
+            languageVersion: 5,
+            moduleAugmentations: [],
+            nodeCount: 4,
+            parseDiagnostics: [],
+            path: `source.tsx`,
+            pos: 0,
+            referencedFiles: [],
+            scriptKind: 4,
+            statements: [{
+              end: 5,
+              expression: {
+                end: 5,
+                flags: 0,
+                kind: 86,
+                pos: 0
+              },
+              flags: 0,
+              kind: 210,
+              modifierFlagsCache: 536870912,
+              pos: 0
+            }],
+            text: `false`,
+            typeReferenceDirectives: []
+          }
+        ]
+      }
+    ]
+  });
 });

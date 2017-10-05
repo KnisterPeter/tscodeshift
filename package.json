@@ -13,7 +13,7 @@
     "start": "npm test -- --watch",
     "clean": "rimraf dist",
     "build": "tsc",
-    "test": "jest",
+    "test": "npm run build && jest",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "prerelease": "git checkout master && git pull origin master && npm test",
     "release": "standard-version",
@@ -31,26 +31,27 @@
   "devDependencies": {
     "@knisterpeter/standard-tslint": "^1.5.1",
     "@types/common-tags": "^1.2.5",
-    "@types/fs-extra": "^3.0.2",
-    "@types/jest": "^19.2.3",
+    "@types/fs-extra": "4.0.2",
+    "@types/jest": "21.1.2",
     "@types/meow": "^3.6.2",
-    "@types/node": "^7.0.18",
+    "@types/node": "8.0.32",
     "common-tags": "^1.4.0",
-    "coveralls": "^2.11.15",
-    "execa": "^0.6.3",
+    "coveralls": "3.0.0",
+    "execa": "^0.8.0",
     "globby": "^6.1.0",
-    "jest": "^20.0.1",
+    "jest": "21.2.1",
+    "jest-cli": "^21.2.1",
     "rimraf": "^2.6.1",
     "standard-version": "^4.0.0",
-    "ts-jest": "^20.0.3",
+    "ts-jest": "21.0.1",
     "tslint": "^5.2.0",
-    "typescript": "^2.3.2"
+    "typescript": "^2.5.3"
   },
   "peerDependencies": {
     "typescript": "^2.3.2"
   },
   "dependencies": {
-    "fs-extra": "^3.0.1",
+    "fs-extra": "^4.0.2",
     "globby": "^6.1.0",
     "meow": "^3.7.0",
     "ts-emitter": "^0.3.1"
@@ -66,6 +67,9 @@
       "js",
       "json"
     ],
-    "collectCoverage": true
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": [
+      "dist"
+    ]
   }
 }
