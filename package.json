@@ -13,7 +13,7 @@
     "start": "npm test -- --watch",
     "clean": "rimraf dist",
     "build": "tsc",
-    "test": "npm run build && jest",
+    "test": "jest",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "prerelease": "git checkout master && git pull origin master && npm test",
     "release": "standard-version",
@@ -44,6 +44,7 @@
     "rimraf": "^2.6.1",
     "standard-version": "^4.0.0",
     "ts-jest": "21.0.1",
+    "ts-node": "^3.3.0",
     "tslint": "^5.2.0",
     "typescript": "^2.5.3"
   },
